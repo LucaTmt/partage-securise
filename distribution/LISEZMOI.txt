@@ -1,0 +1,19 @@
+partage-securise 0.5.0 : contrôle d'une skill, d'un plugin ou d'un asset avant partage
+ou installation, avec SkillEvaluator et SkillSpector (NVIDIA), detect-secrets (IBM)
+et la checklist « Avant de partager un asset ». Compatible Claude et IBM Bob.
+
+Installer la skill :
+- claude.ai : importer claude-ai/verifier-asset.zip (Paramètres, Capacités).
+- Claude Code : le dossier partage-securise/ est le plugin.
+- IBM Bob : copier partage-securise/skills/verifier-asset dans ~/.bob/skills/
+  (ou dans .bob/skills/ d'un projet).
+
+Installer les outils à leur dernière version (il faut uv : brew install uv) :
+  python3 partage-securise/skills/verifier-asset/scripts/installer_outils.py              (état)
+  python3 partage-securise/skills/verifier-asset/scripts/installer_outils.py --installer  (installation)
+
+Puis une seule commande pour tout contrôler :
+  python3 partage-securise/skills/verifier-asset/scripts/controle.py ./mon-asset --mode partager
+
+Ou simplement demander à l'agent : « vérifie cette skill », avec le dossier, le zip ou le lien.
+Détails : partage-securise/README.md
