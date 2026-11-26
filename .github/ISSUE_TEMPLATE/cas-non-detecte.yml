@@ -1,0 +1,46 @@
+name: Cas non détecté
+description: Un piège (secret, instruction cachée, script risqué…) passe sans alerte.
+title: "Non détecté : "
+labels: ["non détecté"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Si ce cas permet à quelqu'un de contourner le contrôle à dessein, ne l'ouvrez pas ici : utilisez le signalement privé (onglet Security, Report a vulnerability).
+
+        Ne collez jamais un vrai secret, une donnée client ou une donnée personnelle : remplacez-les par un exemple factice du même format.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: "0.6.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type de piège
+      options:
+        - Secret ou identifiant
+        - Donnée personnelle ou confidentielle
+        - Instruction cachée ou injection
+        - Script ou commande risqués
+        - Plugin (hook, serveur MCP, commande)
+        - Autre
+    validations:
+      required: true
+  - type: textarea
+    id: exemple
+    attributes:
+      label: Exemple minimal factice
+      description: Le plus petit extrait qui devrait déclencher une alerte.
+      render: markdown
+    validations:
+      required: true
+  - type: textarea
+    id: attendu
+    attributes:
+      label: Ce que le contrôle aurait dû signaler
+      description: Catégorie et niveau attendus (bloquant, à vérifier, info).
+    validations:
+      required: true

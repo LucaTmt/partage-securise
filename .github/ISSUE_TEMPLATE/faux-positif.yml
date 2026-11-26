@@ -1,0 +1,38 @@
+name: Faux positif
+description: Le contrôle signale un problème qui n'en est pas un.
+title: "Faux positif : "
+labels: ["faux positif"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ne collez jamais un vrai secret, une donnée client ou une donnée personnelle : remplacez-les par un exemple factice du même format.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Version du plugin (dans plugin.json) ou de la release utilisée.
+      placeholder: "0.6.0"
+    validations:
+      required: true
+  - type: textarea
+    id: point
+    attributes:
+      label: Point relevé à tort
+      description: La ligne du rapport (niveau, catégorie, message), telle qu'elle apparaît dans rapport.md.
+    validations:
+      required: true
+  - type: textarea
+    id: exemple
+    attributes:
+      label: Exemple minimal
+      description: Le plus petit extrait de fichier qui reproduit le faux positif.
+      render: markdown
+    validations:
+      required: true
+  - type: textarea
+    id: raison
+    attributes:
+      label: Pourquoi ce n'est pas un problème
+    validations:
+      required: true

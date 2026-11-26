@@ -1,0 +1,39 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Tests (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.9", "3.13"]
+    steps:
+      # Actions épinglées sur un commit exact, pas sur une étiquette qui peut être déplacée.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Tests de controle.py sur des skills piégées
+        run: python -m unittest discover -s tests -v
+
+      - name: La skill se contrôle elle-même (contrôles internes)
+        run: |
+          code=0
+          python plugins/partage-securise/skills/verifier-asset/scripts/controle.py \
+            plugins/partage-securise/skills/verifier-asset \
+            --mode partager --sans-outils --sortie "$RUNNER_TEMP/controle" || code=$?
+          cat "$RUNNER_TEMP/controle/rapport.md"
+          # 0 ou 1 : rien de bloquant (1 = outils externes absents, normal ici) ; 2 ou 3 : échec
+          test "$code" -lt 2
