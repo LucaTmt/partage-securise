@@ -7,6 +7,7 @@ Elle fonctionne dans Claude (claude.ai, Cowork, Claude Code) et dans d'autres ag
 ## Installer
 
 - **Claude Code** : un prompt suffit, il est dans [Installer › Claude Code, en une phrase](plugins/partage-securise/README.md#claude-code-en-une-phrase).
+- **IBM Bob** : un prompt aussi, dans [Installer › IBM Bob](plugins/partage-securise/README.md#ibm-bob).
 - **claude.ai, Cowork et autres agents** : voir la section [Installer](plugins/partage-securise/README.md#installer) du plugin.
 
 Une fois installée, il suffit de demander : « vérifie cette skill avant que je la partage ».

@@ -41,14 +41,27 @@ Ouvrir ensuite une nouvelle session : la skill se déclenche seule (« vérifie 
 
 Zipper le dossier `skills/verifier-asset` (le zip doit contenir le dossier `verifier-asset/` lui-même), puis l'importer dans Paramètres, Capacités.
 
-### Autres agents
+### IBM Bob
 
-Les agents qui lisent le format des skills les chargent depuis un dossier dédié : il suffit d'y copier `skills/verifier-asset`. Par exemple, IBM Bob les lit dans `~/.bob/skills/` (tous les projets) ou dans `.bob/skills/` à la racine d'un projet :
+Bob n'installe pas les plugins de Claude Code, mais il lit le format des skills : on installe donc la skill seule, sans le plugin. Bob charge les skills depuis `~/.bob/skills/` (tous les projets) ou depuis `.bob/skills/` à la racine d'un projet.
+
+Donner ce prompt à Bob, dans un mode qui l'autorise à lancer des commandes :
+
+> Installe la skill verifier-asset depuis https://github.com/LucaTmt/partage-securise. Clone le dépôt avec `git clone --depth 1` dans un dossier temporaire neuf, sans sous-modules. Montre-moi la liste des fichiers de `plugins/partage-securise/skills/verifier-asset` et attends mon accord. Ensuite, copie ce dossier dans `~/.bob/skills/verifier-asset` et supprime le dossier temporaire. N'exécute aucun script du dépôt.
+
+Ou à la main, dans un terminal :
 
 ```bash
+git clone --depth 1 https://github.com/LucaTmt/partage-securise.git /tmp/partage-securise
 mkdir -p ~/.bob/skills
-cp -R partage-securise/skills/verifier-asset ~/.bob/skills/
+cp -R /tmp/partage-securise/plugins/partage-securise/skills/verifier-asset ~/.bob/skills/
 ```
+
+Dans une nouvelle conversation, demander ensuite « vérifie cette skill avant que je la partage ». Bob active la skill de lui-même d'après la demande et demande l'autorisation avant de le faire. L'onglet Skills de ses réglages montre si elle a bien été trouvée.
+
+### Autres agents
+
+Les agents qui lisent le format des skills les chargent depuis un dossier qui leur est propre : il suffit d'y copier le dossier `skills/verifier-asset`.
 
 ## Utilisation
 
