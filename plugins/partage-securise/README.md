@@ -123,10 +123,12 @@ Demander simplement : « vérifie cette skill avant que je la partage » ou « e
 
 Il faut uv et git : voir [Dépendances](#dépendances), qui donne aussi une commande pour tout installer d'un coup.
 
+Les commandes ci-dessous se lancent depuis la racine du dépôt cloné.
+
 Faire le point, sans rien changer :
 
 ```bash
-python3 partage-securise/skills/verifier-asset/scripts/installer_outils.py
+python3 plugins/partage-securise/skills/verifier-asset/scripts/installer_outils.py
 ```
 
 | Outil | Où le script cherche la dernière version |
@@ -140,7 +142,7 @@ Il affiche pour chacun la version installée, la dernière version et les comman
 Installer ou mettre à jour :
 
 ```bash
-python3 partage-securise/skills/verifier-asset/scripts/installer_outils.py --installer
+python3 plugins/partage-securise/skills/verifier-asset/scripts/installer_outils.py --installer
 ```
 
 À relancer de temps en temps pour récupérer les nouvelles versions : les outils ne se mettent pas à jour seuls.
@@ -148,7 +150,7 @@ python3 partage-securise/skills/verifier-asset/scripts/installer_outils.py --ins
 Contrôler un asset. Cette commande lance les trois outils et les contrôles internes :
 
 ```bash
-python3 partage-securise/skills/verifier-asset/scripts/controle.py ./mon-asset --mode partager
+python3 plugins/partage-securise/skills/verifier-asset/scripts/controle.py ./mon-asset --mode partager
 ```
 
 L'asset peut être un dossier, une archive `.zip`, `.skill` ou `.plugin`, ou, en cas secondaire, un fichier seul (prompt, gabarit, script), contrôlé en partie seulement : sans `SKILL.md`, SkillEvaluator et SkillSpector ne tournent pas. Codes de sortie : 0 = rien relevé, 1 = points à vérifier (dont un outil qui n'a pas tourné), 2 = au moins un point bloquant, 3 = contrôle impossible.
