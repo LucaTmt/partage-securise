@@ -1,11 +1,11 @@
 ---
 name: verifier-asset
-description: "Contrôle une skill, un plugin, un prompt ou un asset avant de le partager à l'équipe, ou avant d'installer une ressource téléchargée : secrets, données client, en-tête YAML, chargement dans les agents, analyse SkillSpector, scripts et instructions cachées, puis rend un verdict. À utiliser quand on veut partager, poster, publier, installer ou vérifier une skill, un plugin ou un asset."
+description: "Contrôle une skill, un plugin, un prompt ou un asset avant de le partager, ou avant d'installer une ressource téléchargée : secrets, données client, en-tête YAML, chargement dans les agents, analyse SkillSpector, scripts et instructions cachées, puis rend un verdict. À utiliser quand on veut partager, poster, publier, installer ou vérifier une skill, un plugin ou un asset."
 ---
 
 # Vérifier un asset avant de le partager ou de l'installer
 
-Ce skill applique la checklist « Avant de partager un asset » du chantier Knowledge & Asset management. Il combine un script de contrôle automatique et une revue que toi seul peux faire, puis rend un verdict.
+Ce skill applique la checklist « Avant de partager un asset ». Il combine un script de contrôle automatique et une revue que toi seul peux faire, puis rend un verdict.
 
 Ce skill fonctionne dans Claude (claude.ai, Cowork, Claude Code) et dans IBM Bob. On appelle `SK` le chemin absolu de son dossier, celui qui contient ce fichier : dans les commandes, remplacer `$SK` par ce chemin en entier, sans `~` (entre guillemets, `~` n'est pas développé). Dans Claude, ce chemin est indiqué au chargement ; dans Bob, c'est `~/.bob/skills/verifier-asset` (à écrire en chemin absolu) ou `.bob/skills/verifier-asset` dans le projet. Il contient `scripts/installer_outils.py` (installation des outils), `scripts/controle.py` (la commande unique de contrôle) et `references/checklist.md` (la checklist complète). Lancer le script demande un mode qui autorise les commandes (dans Bob, le mode Agent).
 
@@ -21,8 +21,8 @@ Ce skill fonctionne dans Claude (claude.ai, Cowork, Claude Code) et dans IBM Bob
 
 Établir avec l'utilisateur, en une question au plus si ce n'est pas clair :
 
-- le **mode** : `partager` (un asset produit en interne, avant de le poster) ou `installer` (une ressource téléchargée, ressources IBM comprises, avant de l'installer) ;
-- le **chemin** : un dossier de skill, un dossier de plugin, une archive `.zip`, `.skill` ou `.plugin`, ou un fichier seul (prompt, gabarit, script), contrôlé sur une copie. Si l'asset est sur le web ou dans un dépôt, l'utilisateur peut donner le lien : créer un dossier temporaire neuf (par exemple avec `mktemp -d`), noter son chemin exact, et y télécharger le fichier, ou le zip du dépôt ou de la release, sans rien exécuter ni installer. Ne pas utiliser `git clone --recurse-submodules`, `pip download`, `npm pack` ni aucun outil qui lance du code. Un lien qui demande une connexion (intranet IBM, Box, SharePoint) ne se télécharge pas tel quel : demander à l'utilisateur de télécharger le fichier et de donner son chemin.
+- le **mode** : `partager` (un asset qu'on a produit, avant de le partager ou de le publier) ou `installer` (une ressource téléchargée, avant de l'installer) ;
+- le **chemin** : un dossier de skill, un dossier de plugin, une archive `.zip`, `.skill` ou `.plugin`, ou un fichier seul (prompt, gabarit, script), contrôlé sur une copie. Si l'asset est sur le web ou dans un dépôt, l'utilisateur peut donner le lien : créer un dossier temporaire neuf (par exemple avec `mktemp -d`), noter son chemin exact, et y télécharger le fichier, ou le zip du dépôt ou de la release, sans rien exécuter ni installer. Ne pas utiliser `git clone --recurse-submodules`, `pip download`, `npm pack` ni aucun outil qui lance du code. Un lien qui demande une connexion (intranet, Box, SharePoint) ne se télécharge pas tel quel : demander à l'utilisateur de télécharger le fichier et de donner son chemin.
 
 ## Étape 2 : préparer les outils
 
@@ -35,7 +35,7 @@ python3 "$SK/scripts/installer_outils.py"
 Le script compare les versions installées aux dernières versions publiées (PyPI pour SkillEvaluator, dernière release GitHub pour SkillSpector et detect-secrets) et affiche les commandes qu'il lancerait. Il ne change rien sans `--installer`.
 
 - Tout est à jour : passer à l'étape 3.
-- Un outil manque ou une mise à jour existe : montrer le tableau et les commandes à l'utilisateur, et attendre son accord explicite avant de lancer `python3 "$SK/scripts/installer_outils.py" --installer`. Sur un poste IBM, rappeler de vérifier les règles internes sur les logiciels open source. Dans un environnement isolé (sandbox de claude.ai ou de Cowork), l'installation ne dure que le temps de la session.
+- Un outil manque ou une mise à jour existe : montrer le tableau et les commandes à l'utilisateur, et attendre son accord explicite avant de lancer `python3 "$SK/scripts/installer_outils.py" --installer`. Sur un poste professionnel, rappeler de vérifier les règles de l'organisation sur les logiciels open source. Dans un environnement isolé (sandbox de claude.ai ou de Cowork), l'installation ne dure que le temps de la session.
 - Dernière version non vérifiable (code 3 : pas de réseau, PyPI ou GitHub injoignable, limite de l'API GitHub) : le dire à l'utilisateur et continuer avec les versions installées. Un outil absent dont la version est inconnue ne peut pas être installé pour l'instant : le contrôle tourne sans, et le rapport le signale.
 - `uv` absent : sur le poste de l'utilisateur, transmettre les indications du script sans rien installer soi-même. Dans un bac à sable (claude.ai, Cowork), proposer d'installer uv dans le bac à sable (`python3 -m pip install uv`) et attendre l'accord : l'installation disparaît avec la session.
 - L'utilisateur refuse, ou l'installation échoue : continuer sans les outils manquants. Les contrôles internes et la revue manuelle gardent leur valeur, et le verdict indique les outils qui n'ont pas tourné.
@@ -56,7 +56,7 @@ Code de sortie : 0 = rien relevé et les outils ont tous tourné, 1 = points à 
 
 - **Secrets** : tout secret est bloquant, même dans un exemple. SkillSpector ne cherche pas les secrets (une skill contenant une clé AWS peut sortir SAFE), d'où detect-secrets et les contrôles internes.
 - **En-tête YAML invalide** : bloquant. Cause fréquente : une description contenant « : » sans guillemets. Claude s'en accommode parfois, d'autres agents ignorent la skill.
-- **Chargement** (`harness-check`) : un agent en `not_loaded` mérite une correction si l'équipe l'utilise ; `degraded` est à lire au cas par cas. L'outil ne teste pas IBM Bob : pour Bob, vérifier à la main que `name` est en minuscules et tirets, identique au nom du dossier, et que `description` est présente (Bob ignore une skill sans description).
+- **Chargement** (`harness-check`) : un agent en `not_loaded` mérite une correction si on compte se servir de la skill dans cet agent ; `degraded` est à lire au cas par cas. L'outil ne teste pas IBM Bob : pour Bob, vérifier à la main que `name` est en minuscules et tirets, identique au nom du dossier, et que `description` est présente (Bob ignore une skill sans description).
 - **SkillSpector** : le score aide à trier. Lire chaque alerte HIGH ou CRITICAL. La règle AE1 (« Incomplete referenced artifact analysis ») signale souvent une image ou du JavaScript que l'outil ne sait pas analyser : la noter comme faux positif après avoir lu le fichier concerné. Une recommandation autre que SAFE ou CAUTION est bloquante.
 - **Plugin** : hooks, serveurs MCP et commandes qui lancent du shell s'exécutent sans que l'agent redemande l'accord à chaque fois. En mode `installer`, lire chaque commande listée : un hook qui envoie des données ou télécharge du code suffit à déconseiller l'installation.
 - **Outils qui n'ont pas tourné** et **contenu non analysé** (binaires, PDF, Office, images, archives imbriquées, dossiers `.git` ou `node_modules`) : le contrôle est incomplet sur ces points ; les relire ou les retirer, et le dire dans le verdict.

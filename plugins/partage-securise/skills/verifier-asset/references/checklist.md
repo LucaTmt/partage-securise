@@ -1,6 +1,6 @@
 # Checklist : avant de partager un asset
 
-Avant de poster une skill, un prompt, un gabarit ou un script dans le canal, on passe ces contrôles. La même liste vaut pour une ressource téléchargée, ressources IBM comprises, avant de l'installer.
+Avant de partager une skill, un prompt, un gabarit ou un script, on passe ces contrôles. La même liste vaut pour une ressource téléchargée, avant de l'installer.
 
 Légende : (auto) = couvert par `scripts/controle.py`, (outil) = couvert si l'outil externe est installé, (revue) = à vérifier en lisant.
 
