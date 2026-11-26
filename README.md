@@ -18,3 +18,7 @@ Une fois installée, il suffit de demander : « vérifie cette skill avant que j
 | [`plugins/partage-securise/`](plugins/partage-securise/) | le plugin, avec son [README](plugins/partage-securise/README.md) : fonctionnement, installation, outils |
 | [`plugins/partage-securise/skills/verifier-asset/`](plugins/partage-securise/skills/verifier-asset/) | la skill : démarche, scripts de contrôle et [checklist](plugins/partage-securise/skills/verifier-asset/references/checklist.md) |
 | [`distribution/`](distribution/) | une note d'installation au format texte, jointe aux paquets distribués |
+
+## Licence
+
+[MIT](LICENSE) : chacun peut utiliser, modifier et redistribuer ce dépôt, à condition de conserver la mention de copyright et le texte de la licence.
