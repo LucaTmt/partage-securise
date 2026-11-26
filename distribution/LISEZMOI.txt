@@ -1,19 +1,29 @@
-partage-securise 0.5.0 : contrôle d'une skill, d'un plugin ou d'un asset avant partage
-ou installation, avec SkillEvaluator et SkillSpector (NVIDIA), detect-secrets (IBM)
-et la checklist « Avant de partager un asset ». Compatible Claude et IBM Bob.
+partage-securise 0.5.0 : vérifier une skill, un plugin ou un prompt avant de le
+partager ou de l'installer (secrets, données confidentielles, instructions cachées,
+scripts suspects). Licence MIT.
+Source, mises à jour et page d'accueil : https://github.com/LucaTmt/partage-securise
+
+Le principe : la skill s'appuie sur trois outils open source maintenus par des
+spécialistes, SkillEvaluator et SkillSpector (NVIDIA), detect-secrets (IBM). Elle les
+garde à jour, avec votre accord, les lance d'une seule commande et agrège leurs
+résultats en un rapport unique, puis l'agent passe en revue ce qu'aucun outil ne voit.
+
+Ce paquet contient :
+- partage-securise/ : le plugin, avec la skill verifier-asset ;
+- claude-ai/verifier-asset.zip : la même skill, prête à importer dans claude.ai ;
+- LISEZMOI.txt : cette note.
 
 Installer la skill :
-- claude.ai : importer claude-ai/verifier-asset.zip (Paramètres, Capacités).
-- Claude Code : le dossier partage-securise/ est le plugin.
+- claude.ai et Cowork : importer claude-ai/verifier-asset.zip (Paramètres, Capacités).
+- Claude Code : copier partage-securise/skills/verifier-asset dans ~/.claude/skills/,
+  ou essayer le plugin entier avec : claude --plugin-dir ./partage-securise
 - IBM Bob : copier partage-securise/skills/verifier-asset dans ~/.bob/skills/
-  (ou dans .bob/skills/ d'un projet).
+  (ou dans .bob/skills/ à la racine d'un projet).
+Sans ce paquet, un prompt suffit : voir la section « Installer » de la page GitHub.
 
-Installer les outils à leur dernière version (il faut uv : brew install uv) :
-  python3 partage-securise/skills/verifier-asset/scripts/installer_outils.py              (état)
-  python3 partage-securise/skills/verifier-asset/scripts/installer_outils.py --installer  (installation)
+Ensuite, demander à l'agent « vérifie cette skill avant que je la partage », en donnant
+le dossier, le zip ou le lien. Les trois outils sont facultatifs : la skill propose de
+les installer et attend votre accord ; sans eux, elle fait ses propres contrôles et le
+signale dans le verdict.
 
-Puis une seule commande pour tout contrôler :
-  python3 partage-securise/skills/verifier-asset/scripts/controle.py ./mon-asset --mode partager
-
-Ou simplement demander à l'agent : « vérifie cette skill », avec le dossier, le zip ou le lien.
 Détails : partage-securise/README.md

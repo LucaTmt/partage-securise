@@ -6,6 +6,24 @@ Avant de partager une skill, un plugin ou un prompt, ou avant d'installer une re
 
 Elle fonctionne dans Claude (claude.ai, Cowork, Claude Code) et dans d'autres agents qui lisent le format des skills.
 
+## Le principe : s'appuyer sur des spécialistes, et agréger
+
+La skill n'essaie pas de tout détecter elle-même. Elle s'appuie sur trois outils open source, développés et maintenus par des entreprises spécialisées, chacun fort sur un terrain précis :
+
+| Outil | Éditeur | Son terrain |
+|---|---|---|
+| [SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator) | NVIDIA | la skill se charge-t-elle dans les principaux agents, et quelle est sa qualité |
+| [SkillSpector](https://github.com/NVIDIA/SkillSpector) | NVIDIA | instructions cachées, envoi de données, scripts suspects, dépendances vulnérables |
+| [detect-secrets](https://github.com/IBM/detect-secrets) | IBM | clés d'API, mots de passe et jetons oubliés |
+
+Ce que la skill ajoute :
+
+- **Des outils à jour.** Avant chaque contrôle, elle compare la version installée de chaque outil à sa dernière version publiée (PyPI, releases GitHub), et propose la mise à jour, qui n'a lieu qu'avec votre accord. Leurs éditeurs améliorent la détection : en profiter ne demande aucun travail de votre côté.
+- **Un seul rapport.** Une commande lance les trois outils et des contrôles maison, puis agrège leurs résultats en un rapport unique, trié en *bloquant*, *à vérifier* et *info*, avec la version de chaque outil, car une nouvelle version peut changer le résultat sur un même asset.
+- **La revue de ce qu'aucun outil ne voit.** L'agent applique ensuite une checklist : données confidentielles, sens réel des scripts, licences.
+
+Pourquoi agréger : aucun outil ne couvre tout. SkillSpector, par exemple, ne cherche pas les secrets : une skill contenant une clé AWS peut en sortir classée SAFE, et seul detect-secrets la trouve.
+
 ## Installer
 
 - **Claude Code** : un prompt suffit, il est dans [Installer › Claude Code, en une phrase](plugins/partage-securise/README.md#claude-code-en-une-phrase).
