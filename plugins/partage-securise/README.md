@@ -96,6 +96,8 @@ Sans uv, git ou les outils d'analyse, la skill fait quand même ses propres cont
 
 ### Vérifier ce qui manque
 
+Les deux commandes de cette section visent la skill installée en skill personnelle, dans `~/.claude/skills/verifier-asset`. Installée par la marketplace, elle se trouve dans `~/.claude/plugins/cache/partage-securise/partage-securise/<version>/skills/verifier-asset` (par exemple `…/0.6.0/skills/…`) : remplacer le chemin en conséquence. On peut aussi demander à l'agent « fais le point sur les outils de verifier-asset ».
+
 Cette commande ne change rien. Elle affiche les versions de Python, git et uv, puis l'état des trois outils (installé, à jour ou non) :
 
 ```bash
