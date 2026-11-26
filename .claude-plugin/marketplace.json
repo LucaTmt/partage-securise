@@ -1,0 +1,12 @@
+{
+  "name": "partage-securise",
+  "description": "Vérifier une skill, un plugin ou un prompt avant de le partager ou de l'installer.",
+  "owner": { "name": "Luca Temst" },
+  "plugins": [
+    {
+      "name": "partage-securise",
+      "source": "./plugins/partage-securise",
+      "description": "Contrôle une skill, un plugin ou un asset avant partage ou installation, avec SkillEvaluator, SkillSpector et detect-secrets, puis rend un verdict."
+    }
+  ]
+}

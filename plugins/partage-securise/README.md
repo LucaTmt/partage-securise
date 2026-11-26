@@ -24,9 +24,26 @@ Une skill, `verifier-asset` :
 
 ## Installer
 
-### Claude Code, en une phrase
+### Claude Code, en une commande (recommandé)
 
-Ouvrir Claude Code et lui donner ce prompt :
+Dans une session Claude Code :
+
+```text
+/plugin install partage-securise --marketplace LucaTmt/partage-securise
+```
+
+Cette forme en une étape demande Claude Code 2.1.275 ou plus récent. Avec une version plus ancienne, en deux étapes :
+
+```text
+/plugin marketplace add LucaTmt/partage-securise
+/plugin install partage-securise@partage-securise
+```
+
+La skill s'appelle alors `/partage-securise:verifier-asset`, ou se déclenche seule d'après la demande. Pour les mises à jour : `claude plugin update partage-securise@partage-securise`, ou activer la mise à jour automatique dans `/plugin`, onglet Marketplaces (elle est désactivée par défaut pour les marketplaces tierces).
+
+### Claude Code, en skill personnelle (un prompt)
+
+Pour installer la skill seule, sans le plugin, ouvrir Claude Code et lui donner ce prompt :
 
 > Installe la skill verifier-asset depuis https://github.com/LucaTmt/partage-securise. Clone le dépôt avec `git clone --depth 1` dans un dossier temporaire neuf, sans sous-modules. Montre-moi la liste des fichiers de `plugins/partage-securise/skills/verifier-asset` et attends mon accord. Ensuite, copie ce dossier dans `~/.claude/skills/verifier-asset` et supprime le dossier temporaire. N'exécute aucun script du dépôt.
 
