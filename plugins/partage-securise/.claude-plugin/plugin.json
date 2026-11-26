@@ -1,6 +1,6 @@
 {
   "name": "partage-securise",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Contrôle une skill, un plugin ou un asset avant de le partager ou avant d'installer une ressource téléchargée, avec SkillEvaluator et SkillSpector (NVIDIA), detect-secrets (IBM) et la checklist « Avant de partager un asset ». Compatible Claude et IBM Bob.",
   "author": {
     "name": "Luca Temst"
