@@ -1,6 +1,6 @@
 # partage-securise
 
-Plugin de sécurité du chantier Knowledge & Asset management. Il contrôle une skill, un plugin ou un asset avant qu'on le partage dans le canal, ou une ressource téléchargée (ressources IBM comprises) avant de l'installer. Il fonctionne dans Claude et dans IBM Bob.
+Un plugin qui contrôle une skill, un plugin, un prompt ou tout autre asset avant de le partager, ou une ressource téléchargée avant de l'installer. Il repère les secrets oubliés, les données personnelles, les instructions cachées et les scripts suspects, puis rend un verdict avec les points à corriger. Il fonctionne dans Claude (claude.ai, Cowork, Claude Code) et dans d'autres agents qui lisent le format des skills.
 
 ## Sur quoi il s'appuie
 
@@ -8,8 +8,10 @@ Plugin de sécurité du chantier Knowledge & Asset management. Il contrôle une 
 |---|---|
 | [SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator) (NVIDIA) | La skill se charge-t-elle dans les principaux agents ? Quelle est sa qualité ? (`harness-check`, `quality-check`) |
 | [SkillSpector](https://github.com/NVIDIA/SkillSpector) (NVIDIA) | Instructions cachées, envoi de données, scripts suspects, dépendances vulnérables, score de risque (`--no-llm`) |
-| [detect-secrets](https://github.com/IBM/detect-secrets) (IBM) | Clés d'API, mots de passe et jetons oubliés dans les fichiers (`--no-verify`) |
-| La checklist « Avant de partager un asset » | Ce qu'aucun outil ne voit : données client, classification, sens réel des scripts et des instructions |
+| [detect-secrets](https://github.com/IBM/detect-secrets) | Clés d'API, mots de passe et jetons oubliés dans les fichiers (`--no-verify`) |
+| La checklist « Avant de partager un asset » | Ce qu'aucun outil ne voit : données personnelles ou confidentielles, sens réel des scripts et des instructions |
+
+Ces trois outils sont open source et facultatifs : sans eux, la skill fait ses propres contrôles et la revue manuelle, et le signale dans le verdict.
 
 ## Contenu
 
@@ -20,31 +22,41 @@ Une skill, `verifier-asset` :
 - `scripts/controle.py` : la commande unique, qui lance les trois outils, ajoute ses propres contrôles (Python 3 seul) et produit un rapport ;
 - `references/checklist.md` : la checklist complète.
 
-## Utilisation
+## Installer
 
-Demander simplement : « vérifie cette skill avant que je la poste » ou « est-ce que je peux installer ce plugin ? », en donnant le dossier, le zip ou le lien. Avec un lien, l'agent télécharge l'asset dans un dossier temporaire, sans rien exécuter ni installer, et supprime ce dossier après le verdict. L'agent rend un verdict et les points à corriger.
+### Claude Code, en une phrase
 
-## Installer dans Claude
+Ouvrir Claude Code et lui donner ce prompt :
 
-- **claude.ai** : Paramètres, Capacités, puis importer `verifier-asset.zip` (dans le dossier `claude-ai/` du paquet).
-- **Claude Code** : ce dossier est le plugin. Pour l'essayer : `claude --plugin-dir ./partage-securise`. Appel direct : `/partage-securise:verifier-asset`.
-- **Claude Code, en skill personnelle** : copier `skills/verifier-asset` dans `~/.claude/skills/`, ou demander à l'agent, depuis ce dossier, « Installe la skill verifier-asset dans mes skills personnelles ». Appel direct : `/verifier-asset`.
-- **Pour toute l'organisation** : publier le plugin dans le catalogue de plugins de l'organisation Claude, si elle en a un.
+> Installe la skill verifier-asset depuis https://github.com/LucaTmt/partage-securise. Clone le dépôt avec `git clone --depth 1` dans un dossier temporaire neuf, sans sous-modules. Montre-moi la liste des fichiers de `plugins/partage-securise/skills/verifier-asset` et attends mon accord. Ensuite, copie ce dossier dans `~/.claude/skills/verifier-asset` et supprime le dossier temporaire. N'exécute aucun script du dépôt.
 
-## Installer dans IBM Bob
+Ouvrir ensuite une nouvelle session : la skill se déclenche seule (« vérifie cette skill avant que je la partage ») ou avec `/verifier-asset`.
 
-Bob charge les skills depuis `~/.bob/skills/` (tous les projets) ou depuis `.bob/skills/` à la racine d'un projet. Il n'y a pas d'import par zip : on copie le dossier.
+### Claude Code, à la main
+
+- **En skill personnelle** : copier `skills/verifier-asset` dans `~/.claude/skills/`. Appel direct : `/verifier-asset`.
+- **En plugin** : ce dossier est le plugin. Pour l'essayer : `claude --plugin-dir ./partage-securise`. Appel direct : `/partage-securise:verifier-asset`.
+
+### claude.ai et Cowork
+
+Zipper le dossier `skills/verifier-asset` (le zip doit contenir le dossier `verifier-asset/` lui-même), puis l'importer dans Paramètres, Capacités.
+
+### Autres agents
+
+Les agents qui lisent le format des skills les chargent depuis un dossier dédié : il suffit d'y copier `skills/verifier-asset`. Par exemple, IBM Bob les lit dans `~/.bob/skills/` (tous les projets) ou dans `.bob/skills/` à la racine d'un projet :
 
 ```bash
 mkdir -p ~/.bob/skills
 cp -R partage-securise/skills/verifier-asset ~/.bob/skills/
 ```
 
-La skill s'active seule quand la demande correspond, ou avec `/verifier-asset`. Bob demande l'autorisation avant de l'activer, et le script de contrôle a besoin du mode Agent.
+## Utilisation
+
+Demander simplement : « vérifie cette skill avant que je la partage » ou « est-ce que je peux installer ce plugin ? », en donnant le dossier, le zip ou le lien. Avec un lien, l'agent télécharge l'asset dans un dossier temporaire, sans rien exécuter ni installer, et supprime ce dossier après le verdict. L'agent rend un verdict et les points à corriger.
 
 ## Installer les outils, puis une seule commande
 
-Sans les outils, la skill fait ses contrôles internes et la revue manuelle, et le signale dans le verdict. Il faut [uv](https://docs.astral.sh/uv/) (sur Mac : `brew install uv`), qui installe chaque outil dans son propre environnement isolé.
+Il faut [uv](https://docs.astral.sh/uv/) (sur Mac : `brew install uv`), qui installe chaque outil dans son propre environnement isolé.
 
 **1. Faire le point** (ne change rien) :
 
@@ -56,7 +68,7 @@ python3 partage-securise/skills/verifier-asset/scripts/installer_outils.py
 |---|---|
 | SkillEvaluator (NVIDIA) | dernière version publiée sur PyPI |
 | SkillSpector (NVIDIA) | dernière release du dépôt GitHub NVIDIA/SkillSpector |
-| detect-secrets (IBM) | dernière release du dépôt GitHub IBM/detect-secrets |
+| detect-secrets | dernière release du dépôt GitHub IBM/detect-secrets |
 
 Il affiche pour chacun la version installée, la dernière version et les commandes `uv tool install` qu'il lancerait. Ce point lit PyPI et GitHub, sans rien envoyer de l'asset. Pour les dépôts GitHub, il installe le commit exact de la release ; le rapport du contrôle note la version de chaque outil.
 
@@ -80,9 +92,9 @@ En pratique, il suffit de demander à l'agent « vérifie cette skill » : la sk
 
 Le rapport indique la version de chaque outil, car une nouvelle version peut changer les résultats sur un même asset.
 
-Avant d'installer ces outils sur un poste IBM, vérifier les règles internes sur les logiciels open source. SkillEvaluator ne teste pas le chargement dans Bob : la skill rappelle les règles de Bob à vérifier à la main.
+Sur un poste professionnel, vérifier d'abord les règles de votre organisation sur l'installation de logiciels open source. SkillEvaluator ne teste pas le chargement dans IBM Bob : la skill rappelle les règles de Bob à vérifier à la main.
 
 ## Sources
 
-- [IBM Bob : skills](https://bob.ibm.com/docs/ide/features/skills)
 - [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/)
+- [IBM Bob : skills](https://bob.ibm.com/docs/ide/features/skills)
