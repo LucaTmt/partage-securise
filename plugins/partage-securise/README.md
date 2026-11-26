@@ -63,13 +63,48 @@ Dans une nouvelle conversation, demander ensuite « vérifie cette skill avant q
 
 Les agents qui lisent le format des skills les chargent depuis un dossier qui leur est propre : il suffit d'y copier le dossier `skills/verifier-asset`.
 
+## Dépendances
+
+La skill ne demande aucune bibliothèque Python : ses deux scripts n'utilisent que la bibliothèque standard, livrée avec Python.
+
+| Dépendance | Obligatoire ? | À quoi elle sert | Sur Mac |
+|---|---|---|---|
+| Python 3.9 ou plus récent | oui | faire tourner `controle.py` et `installer_outils.py` | fourni par les outils de ligne de commande d'Apple (`xcode-select --install`) ou par Homebrew |
+| Un agent qui peut lancer des commandes | oui | Claude Code, Cowork, claude.ai, ou IBM Bob dans un mode qui autorise les commandes | — |
+| [uv](https://docs.astral.sh/uv/) | pour les outils d'analyse | installe chaque outil dans son propre environnement isolé, et télécharge lui-même le Python 3.13 qu'ils demandent s'il manque | `brew install uv` |
+| git | pour les outils d'analyse | uv en a besoin pour installer SkillSpector et detect-secrets depuis GitHub | outils de ligne de commande d'Apple, ou `brew install git` |
+| SkillEvaluator, SkillSpector, detect-secrets | non, mais recommandés | les trois outils d'analyse | installés par `installer_outils.py` |
+
+Sans uv, git ou les outils d'analyse, la skill fait quand même ses propres contrôles et la revue manuelle, et le verdict signale les outils qui n'ont pas tourné.
+
+### Vérifier ce qui manque
+
+Cette commande ne change rien. Elle affiche les versions de Python, git et uv, puis l'état des trois outils (installé, à jour ou non) :
+
+```bash
+python3 --version; git --version; uv --version; python3 ~/.claude/skills/verifier-asset/scripts/installer_outils.py
+```
+
+### Tout installer en une commande (Mac avec Homebrew)
+
+```bash
+brew install python git uv && python3 ~/.claude/skills/verifier-asset/scripts/installer_outils.py --installer
+```
+
+Homebrew installe ou met à jour Python, git et uv, puis le script installe les trois outils d'analyse à leur dernière version publiée. Relancer la même commande plus tard met tout à jour.
+
+- **IBM Bob** : remplacer `~/.claude/skills` par `~/.bob/skills` dans les deux commandes.
+- **Mac sans Homebrew** : `xcode-select --install` fournit Python et git ; pour uv, suivre [son guide d'installation](https://docs.astral.sh/uv/getting-started/installation/).
+- **Linux ou Windows** : installer Python et git avec le gestionnaire de paquets du système, puis uv avec son guide d'installation.
+- **claude.ai et Cowork** : rien à faire à l'avance. La skill tourne dans un bac à sable, une machine temporaire, et propose d'y installer uv et les outils le temps de la session.
+
 ## Utilisation
 
 Demander simplement : « vérifie cette skill avant que je la partage » ou « est-ce que je peux installer ce plugin ? », en donnant le dossier, le zip ou le lien. Avec un lien, l'agent télécharge l'asset dans un dossier temporaire, sans rien exécuter ni installer, et supprime ce dossier après le verdict. L'agent rend un verdict et les points à corriger.
 
 ## Installer les outils, puis une seule commande
 
-Il faut [uv](https://docs.astral.sh/uv/) (sur Mac : `brew install uv`), qui installe chaque outil dans son propre environnement isolé.
+Il faut uv et git : voir [Dépendances](#dépendances), qui donne aussi une commande pour tout installer d'un coup.
 
 **1. Faire le point** (ne change rien) :
 

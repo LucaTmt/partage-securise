@@ -29,6 +29,7 @@ Pourquoi agréger : aucun outil ne couvre tout. SkillSpector, par exemple, ne ch
 - **Claude Code** : un prompt suffit, il est dans [Installer › Claude Code, en une phrase](plugins/partage-securise/README.md#claude-code-en-une-phrase).
 - **IBM Bob** : un prompt aussi, dans [Installer › IBM Bob](plugins/partage-securise/README.md#ibm-bob).
 - **claude.ai, Cowork et autres agents** : voir la section [Installer](plugins/partage-securise/README.md#installer) du plugin.
+- **Dépendances** : Python 3.9 ou plus récent, et pour les outils d'analyse uv et git. La liste et une commande pour tout installer sont dans [Dépendances](plugins/partage-securise/README.md#dépendances).
 
 Une fois installée, il suffit de demander : « vérifie cette skill avant que je la partage ».
 

@@ -20,6 +20,8 @@ Installer la skill :
 - IBM Bob : copier partage-securise/skills/verifier-asset dans ~/.bob/skills/
   (ou dans .bob/skills/ à la racine d'un projet).
 Sans ce paquet, un prompt suffit : voir la section « Installer » de la page GitHub.
+Dépendances : Python 3.9 ou plus récent ; uv et git pour installer les outils d'analyse.
+Liste complète et commande pour tout installer : section « Dépendances » du README.
 
 Ensuite, demander à l'agent « vérifie cette skill avant que je la partage », en donnant
 le dossier, le zip ou le lien. Les trois outils sont facultatifs : la skill propose de
