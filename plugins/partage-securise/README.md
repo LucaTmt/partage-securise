@@ -51,8 +51,8 @@ Ouvrir ensuite une nouvelle session : la skill se déclenche seule (« vérifie 
 
 ### Claude Code, à la main
 
-- **En skill personnelle** : copier `skills/verifier-asset` dans `~/.claude/skills/`. Appel direct : `/verifier-asset`.
-- **En plugin** : ce dossier est le plugin. Pour l'essayer : `claude --plugin-dir ./partage-securise`. Appel direct : `/partage-securise:verifier-asset`.
+- En skill personnelle : copier `skills/verifier-asset` dans `~/.claude/skills/`. Appel direct : `/verifier-asset`.
+- En plugin : ce dossier est le plugin. Pour l'essayer : `claude --plugin-dir ./partage-securise`. Appel direct : `/partage-securise:verifier-asset`.
 
 ### claude.ai et Cowork
 
@@ -87,7 +87,7 @@ La skill ne demande aucune bibliothèque Python : ses deux scripts n'utilisent q
 | Dépendance | Obligatoire ? | À quoi elle sert | Sur Mac |
 |---|---|---|---|
 | Python 3.9 ou plus récent | oui | faire tourner `controle.py` et `installer_outils.py` | fourni par les outils de ligne de commande d'Apple (`xcode-select --install`) ou par Homebrew |
-| Un agent qui peut lancer des commandes | oui | Claude Code, Cowork, claude.ai, ou IBM Bob dans un mode qui autorise les commandes | — |
+| Un agent qui peut lancer des commandes | oui | Claude Code, Cowork, claude.ai, ou IBM Bob dans un mode qui autorise les commandes | sans objet |
 | [uv](https://docs.astral.sh/uv/) | pour les outils d'analyse | installe chaque outil dans son propre environnement isolé, et télécharge lui-même le Python 3.13 qu'ils demandent s'il manque | `brew install uv` |
 | git | pour les outils d'analyse | uv en a besoin pour installer SkillSpector et detect-secrets depuis GitHub | outils de ligne de commande d'Apple, ou `brew install git` |
 | SkillEvaluator, SkillSpector, detect-secrets | non, mais recommandés | les trois outils d'analyse | installés par `installer_outils.py` |
@@ -110,20 +110,20 @@ brew install python git uv && python3 ~/.claude/skills/verifier-asset/scripts/in
 
 Homebrew installe ou met à jour Python, git et uv, puis le script installe les trois outils d'analyse à leur dernière version publiée. Relancer la même commande plus tard met tout à jour.
 
-- **IBM Bob** : remplacer `~/.claude/skills` par `~/.bob/skills` dans les deux commandes.
-- **Mac sans Homebrew** : `xcode-select --install` fournit Python et git ; pour uv, suivre [son guide d'installation](https://docs.astral.sh/uv/getting-started/installation/).
-- **Linux ou Windows** : installer Python et git avec le gestionnaire de paquets du système, puis uv avec son guide d'installation.
-- **claude.ai et Cowork** : rien à faire à l'avance. La skill tourne dans un bac à sable, une machine temporaire, et propose d'y installer uv et les outils le temps de la session.
+- IBM Bob : remplacer `~/.claude/skills` par `~/.bob/skills` dans les deux commandes.
+- Mac sans Homebrew : `xcode-select --install` fournit Python et git ; pour uv, suivre [son guide d'installation](https://docs.astral.sh/uv/getting-started/installation/).
+- Linux ou Windows : installer Python et git avec le gestionnaire de paquets du système, puis uv avec son guide d'installation.
+- claude.ai et Cowork : rien à préparer. La skill tourne dans un bac à sable, une machine temporaire, et propose d'y installer uv et les outils le temps de la session.
 
 ## Utilisation
 
-Demander simplement : « vérifie cette skill avant que je la partage » ou « est-ce que je peux installer ce plugin ? », en donnant le dossier, le zip ou le lien. Avec un lien, l'agent télécharge l'asset dans un dossier temporaire, sans rien exécuter ni installer, et supprime ce dossier après le verdict. L'agent rend un verdict et les points à corriger.
+Demander simplement : « vérifie cette skill avant que je la partage » ou « est-ce que je peux installer ce plugin ? », en donnant le dossier, le zip ou le lien. Avec un lien, l'agent télécharge l'asset dans un dossier temporaire, sans rien exécuter ni installer, et supprime ce dossier après le verdict.
 
-## Installer les outils, puis une seule commande
+## Lancer le contrôle à la main
 
 Il faut uv et git : voir [Dépendances](#dépendances), qui donne aussi une commande pour tout installer d'un coup.
 
-**1. Faire le point** (ne change rien) :
+Faire le point, sans rien changer :
 
 ```bash
 python3 partage-securise/skills/verifier-asset/scripts/installer_outils.py
@@ -135,9 +135,9 @@ python3 partage-securise/skills/verifier-asset/scripts/installer_outils.py
 | SkillSpector (NVIDIA) | dernière release du dépôt GitHub NVIDIA/SkillSpector |
 | detect-secrets | dernière release du dépôt GitHub IBM/detect-secrets |
 
-Il affiche pour chacun la version installée, la dernière version et les commandes `uv tool install` qu'il lancerait. Ce point lit PyPI et GitHub, sans rien envoyer de l'asset. Pour les dépôts GitHub, il installe le commit exact de la release ; le rapport du contrôle note la version de chaque outil.
+Il affiche pour chacun la version installée, la dernière version et les commandes `uv tool install` qu'il lancerait. Ce point lit PyPI et GitHub, sans rien envoyer de l'asset. Pour les dépôts GitHub, il installe le commit exact de la release. Le rapport du contrôle note la version de chaque outil, car une nouvelle version peut changer le résultat sur un même asset.
 
-**2. Installer ou mettre à jour** :
+Installer ou mettre à jour :
 
 ```bash
 python3 partage-securise/skills/verifier-asset/scripts/installer_outils.py --installer
@@ -145,7 +145,7 @@ python3 partage-securise/skills/verifier-asset/scripts/installer_outils.py --ins
 
 À relancer de temps en temps pour récupérer les nouvelles versions : les outils ne se mettent pas à jour seuls.
 
-**3. Contrôler un asset, avec une seule commande** qui lance les trois outils et les contrôles internes :
+Contrôler un asset. Cette commande lance les trois outils et les contrôles internes :
 
 ```bash
 python3 partage-securise/skills/verifier-asset/scripts/controle.py ./mon-asset --mode partager
@@ -155,15 +155,13 @@ L'asset peut être un dossier, une archive `.zip`, `.skill` ou `.plugin`, ou, en
 
 En pratique, il suffit de demander à l'agent « vérifie cette skill » : la skill fait le point sur les outils, propose l'installation et attend votre accord, puis lance le contrôle.
 
-Le rapport indique la version de chaque outil, car une nouvelle version peut changer les résultats sur un même asset.
-
 Sur un poste professionnel, vérifier d'abord les règles de votre organisation sur l'installation de logiciels open source. SkillEvaluator ne teste pas le chargement dans IBM Bob : la skill rappelle les règles de Bob à vérifier à la main.
 
 ## Choix de sécurité
 
-- **Pas de champ `allowed-tools`.** Dans Claude Code, ce champ ne restreint pas les outils : il autorise ceux qu'il liste sans demander, le temps du tour. Une instruction cachée dans l'asset contrôlé pourrait alors faire lire ou lancer quelque chose sans que l'utilisateur soit sollicité. La skill laisse donc chaque action soumise aux permissions habituelles. SkillSpector le signale (règle LP3, « no tool scope ») : c'est un choix, pas un oubli.
-- **Rien n'est envoyé en ligne pendant le contrôle** : detect-secrets tourne avec `--no-verify`, SkillSpector avec `--no-llm`, et les outils sans les clés d'API des fournisseurs de modèles.
-- **Aucun script de l'asset n'est exécuté**, et l'original n'est jamais modifié.
+La skill ne déclare pas de champ `allowed-tools`. Dans Claude Code, ce champ autorise les outils qu'il liste sans demander, le temps du tour. Une instruction cachée dans l'asset contrôlé pourrait alors faire lire ou lancer quelque chose sans que l'utilisateur soit sollicité. Chaque action reste donc soumise aux permissions habituelles. SkillSpector le relève (règle LP3, « no tool scope »), et c'est voulu.
+
+Pendant le contrôle, rien n'est envoyé en ligne : detect-secrets tourne avec `--no-verify`, SkillSpector avec `--no-llm`, et les outils sans les clés d'API des fournisseurs de modèles. Aucun script de l'asset n'est exécuté, et l'original n'est jamais modifié.
 
 ## Sources
 

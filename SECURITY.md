@@ -1,6 +1,6 @@
 # Sécurité
 
-`partage-securise` est un outil de sécurité : une faille dans le contrôle, ou un piège qu'il laisse passer, compte autant qu'un bogue ordinaire.
+Un piège que le contrôle laisse passer est un bogue, et parfois une faille de sécurité.
 
 ## Signaler une faille
 
@@ -21,6 +21,6 @@ Seule la dernière version publiée reçoit des corrections.
 | 0.6.x | oui |
 | antérieures | non |
 
-## Ce que l'outil ne promet pas
+## Limites
 
 Un verdict « prêt » aide à décider ; il ne garantit pas l'absence de problème. Les limites connues sont décrites dans la section « Limites » de [`SKILL.md`](plugins/partage-securise/skills/verifier-asset/SKILL.md).

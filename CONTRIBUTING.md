@@ -1,20 +1,20 @@
 # Contribuer
 
-Merci de vouloir améliorer `partage-securise`. Les signalements comptent autant que le code : un faux positif ou un piège non détecté, bien décrit, fait progresser l'outil.
+Merci de vouloir améliorer `partage-securise`. Un faux positif ou un piège non détecté, signalé avec un exemple minimal, est aussi utile qu'une modification du code.
 
 ## Signaler
 
-- **Faux positif** ou **cas non détecté** : ouvrir un ticket avec le modèle correspondant.
-- **Faille de sécurité** : jamais en public, voir [SECURITY.md](SECURITY.md).
+- Faux positif ou cas non détecté : ouvrir un ticket avec le modèle correspondant.
+- Faille de sécurité : jamais en public, voir [SECURITY.md](SECURITY.md).
 - Ne jamais coller un vrai secret, une donnée client ou une donnée personnelle dans un ticket : un exemple factice du même format suffit.
 
 ## Modifier le code
 
 Les scripts de la skill (`plugins/partage-securise/skills/verifier-asset/scripts/`) suivent trois règles :
 
-- **Python 3.9 ou plus récent, bibliothèque standard seule** : aucune dépendance à installer pour faire tourner le contrôle.
-- **Rien n'est envoyé en ligne pendant le contrôle**, et aucun script de l'asset contrôlé n'est exécuté.
-- **Une valeur de secret n'est jamais affichée** : fichier, ligne et type suffisent.
+- Python 3.9 ou plus récent, bibliothèque standard seule : faire tourner le contrôle ne demande aucune dépendance.
+- Rien n'est envoyé en ligne pendant le contrôle, et aucun script de l'asset contrôlé n'est exécuté.
+- Une valeur de secret n'est jamais affichée : fichier, ligne et type suffisent.
 
 ### Lancer les tests
 

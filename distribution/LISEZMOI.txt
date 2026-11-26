@@ -3,10 +3,10 @@ de l'installer (secrets, données confidentielles, instructions cachées,
 scripts suspects). Licence MIT.
 Source, mises à jour et page d'accueil : https://github.com/LucaTmt/partage-securise
 
-Le principe : la skill s'appuie sur trois outils open source maintenus par des
-spécialistes, SkillEvaluator et SkillSpector (NVIDIA), detect-secrets (IBM). Elle les
-garde à jour, avec votre accord, les lance d'une seule commande et agrège leurs
-résultats en un rapport unique, puis l'agent passe en revue ce qu'aucun outil ne voit.
+La skill s'appuie sur trois outils open source maintenus par des spécialistes :
+SkillEvaluator et SkillSpector (NVIDIA), detect-secrets (IBM). Elle les garde à
+jour avec votre accord, les lance d'une seule commande et réunit leurs résultats
+dans un seul rapport. L'agent passe ensuite en revue ce qu'aucun outil ne voit.
 
 Ce paquet contient :
 - partage-securise/ : le plugin, avec la skill verifier-asset ;
@@ -19,7 +19,8 @@ Installer la skill :
   ou essayer le plugin entier avec : claude --plugin-dir ./partage-securise
 - IBM Bob : copier partage-securise/skills/verifier-asset dans ~/.bob/skills/
   (ou dans .bob/skills/ à la racine d'un projet).
-Sans ce paquet, un prompt suffit : voir la section « Installer » de la page GitHub.
+Sans ce paquet, dans Claude Code :
+  /plugin install partage-securise --marketplace LucaTmt/partage-securise
 Dépendances : Python 3.9 ou plus récent ; uv et git pour installer les outils d'analyse.
 Liste complète et commande pour tout installer : section « Dépendances » du README.
 
