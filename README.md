@@ -1,5 +1,7 @@
 # partage-securise
 
+![Vérifier une skill avant de la partager ou de l'installer : le parcours en six étapes, les contrôles couverts par chaque outil, les cas d'usage et les garde-fous](docs/one-pager.png)
+
 Avant de partager une skill, un plugin ou un prompt, ou avant d'installer une ressource téléchargée, on vérifie qu'il ne contient ni secret oublié, ni donnée personnelle, ni instruction cachée, ni script suspect. Ce dépôt fournit la skill **`verifier-asset`**, qui fait ce contrôle et rend un verdict avec les points à corriger.
 
 Elle fonctionne dans Claude (claude.ai, Cowork, Claude Code) et dans d'autres agents qui lisent le format des skills.
@@ -18,6 +20,7 @@ Une fois installée, il suffit de demander : « vérifie cette skill avant que j
 |---|---|
 | [`plugins/partage-securise/`](plugins/partage-securise/) | le plugin, avec son [README](plugins/partage-securise/README.md) : fonctionnement, installation, outils |
 | [`plugins/partage-securise/skills/verifier-asset/`](plugins/partage-securise/skills/verifier-asset/) | la skill : démarche, scripts de contrôle et [checklist](plugins/partage-securise/skills/verifier-asset/references/checklist.md) |
+| [`docs/`](docs/) | le one-pager affiché en tête de cette page |
 | [`distribution/`](distribution/) | une note d'installation au format texte, jointe aux paquets distribués |
 
 ## Licence
