@@ -1,5 +1,5 @@
-partage-securise 0.6.0 : vérifier une skill, un plugin ou un prompt avant de le
-partager ou de l'installer (secrets, données confidentielles, instructions cachées,
+partage-securise 0.6.0 : vérifier une skill ou un plugin avant de le partager ou
+de l'installer (secrets, données confidentielles, instructions cachées,
 scripts suspects). Licence MIT.
 Source, mises à jour et page d'accueil : https://github.com/LucaTmt/partage-securise
 

@@ -1,6 +1,6 @@
 ---
 name: verifier-asset
-description: "Contrôle une skill, un plugin, un prompt ou un asset avant de le partager, ou avant d'installer une ressource téléchargée : secrets, données client, en-tête YAML, chargement dans les agents, analyse SkillSpector, scripts et instructions cachées, puis rend un verdict. À utiliser quand on veut partager, poster, publier, installer ou vérifier une skill, un plugin ou un asset. Use it to check a skill, plugin or prompt before sharing or installing it."
+description: "Contrôle une skill ou un plugin avant de le partager, ou avant d'installer une ressource téléchargée : secrets, données client, en-tête YAML, chargement dans les agents, analyse SkillSpector, scripts et instructions cachées, puis rend un verdict. À utiliser quand on veut partager, poster, publier, installer ou vérifier une skill, un plugin ou un asset. Use it to check a skill or plugin before sharing or installing it."
 license: MIT
 metadata:
   author: "Luca Temst"
@@ -41,7 +41,7 @@ La checklist complète est dans `references/checklist.md`.
 Établir avec l'utilisateur, en une question au plus si ce n'est pas clair :
 
 - le **mode** : `partager` (un asset qu'on a produit, avant de le partager ou de le publier) ou `installer` (une ressource téléchargée, avant de l'installer) ;
-- le **chemin** : un dossier de skill, un dossier de plugin, une archive `.zip`, `.skill` ou `.plugin`, ou un fichier seul (prompt, gabarit, script), contrôlé sur une copie. Si l'asset est sur le web ou dans un dépôt, l'utilisateur peut donner le lien : créer un dossier temporaire neuf (par exemple avec `mktemp -d`), noter son chemin exact, et y télécharger le fichier, ou le zip du dépôt ou de la release, sans rien exécuter ni installer. Ne pas utiliser `git clone --recurse-submodules`, `pip download`, `npm pack` ni aucun outil qui lance du code. Un lien qui demande une connexion (intranet, Box, SharePoint) ne se télécharge pas tel quel : demander à l'utilisateur de télécharger le fichier et de donner son chemin.
+- le **chemin** : un dossier de skill, un dossier de plugin, une archive `.zip`, `.skill` ou `.plugin`, ou, en cas secondaire, un fichier seul (prompt, gabarit, script), dont le contrôle est partiel (voir « Limites »). Tout est contrôlé sur une copie. Si l'asset est sur le web ou dans un dépôt, l'utilisateur peut donner le lien : créer un dossier temporaire neuf (par exemple avec `mktemp -d`), noter son chemin exact, et y télécharger le fichier, ou le zip du dépôt ou de la release, sans rien exécuter ni installer. Ne pas utiliser `git clone --recurse-submodules`, `pip download`, `npm pack` ni aucun outil qui lance du code. Un lien qui demande une connexion (intranet, Box, SharePoint) ne se télécharge pas tel quel : demander à l'utilisateur de télécharger le fichier et de donner son chemin.
 
 ## Étape 2 : préparer les outils
 
@@ -128,5 +128,6 @@ Le contrôle aide à décider ; un verdict « prêt » n'est pas une garantie.
 - Le contenu des PDF, des fichiers Office et des images n'est pas lu : ni texte, ni métadonnées (auteur, propriétés, EXIF). Ces fichiers sont signalés comme non analysés et relèvent de la revue manuelle.
 - Les archives imbriquées ne sont pas ouvertes.
 - SkillSpector tourne en analyse statique (`--no-llm`) : il repère des formes, pas des intentions. La lecture des scripts reste à faire.
+- Un fichier seul, sans `SKILL.md` (prompt, gabarit, script), n'est contrôlé qu'en partie : SkillEvaluator et SkillSpector ne tournent pas ; restent detect-secrets, les contrôles internes et la checklist.
 - `harness-check` ne teste pas IBM Bob.
 - Le contrôle porte sur la copie examinée : une ressource téléchargée de nouveau peut avoir changé.

@@ -1,6 +1,6 @@
 {
   "name": "partage-securise",
-  "description": "Vérifier une skill, un plugin ou un prompt avant de le partager ou de l'installer.",
+  "description": "Vérifier une skill ou un plugin avant de le partager ou de l'installer.",
   "owner": { "name": "Luca Temst" },
   "plugins": [
     {

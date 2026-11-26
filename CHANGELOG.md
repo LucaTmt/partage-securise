@@ -16,6 +16,7 @@ Les versions suivent le [versionnage sémantique](https://semver.org/lang/fr/) :
 
 ### Modifié
 
+- La skill se présente comme un contrôle de skills et de plugins. Un fichier seul (prompt, gabarit, script) reste accepté, en cas secondaire : sans `SKILL.md`, seuls detect-secrets, les contrôles internes et la checklist s'appliquent.
 - La skill, sa checklist et la documentation ne renvoient plus à un contexte d'entreprise.
 
 ### Choix

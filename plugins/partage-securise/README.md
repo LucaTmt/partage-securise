@@ -1,6 +1,6 @@
 # partage-securise
 
-Un plugin qui contrôle une skill, un plugin, un prompt ou tout autre asset avant de le partager, ou une ressource téléchargée avant de l'installer. Il repère les secrets oubliés, les données personnelles, les instructions cachées et les scripts suspects, puis rend un verdict avec les points à corriger. Il fonctionne dans Claude (claude.ai, Cowork, Claude Code) et dans d'autres agents qui lisent le format des skills.
+Un plugin qui contrôle une skill ou un plugin avant de le partager, ou une ressource téléchargée avant de l'installer. Il repère les secrets oubliés, les données personnelles, les instructions cachées et les scripts suspects, puis rend un verdict avec les points à corriger. Il fonctionne dans Claude (claude.ai, Cowork, Claude Code) et dans d'autres agents qui lisent le format des skills.
 
 ## Sur quoi il s'appuie
 
@@ -151,7 +151,7 @@ python3 partage-securise/skills/verifier-asset/scripts/installer_outils.py --ins
 python3 partage-securise/skills/verifier-asset/scripts/controle.py ./mon-asset --mode partager
 ```
 
-L'asset peut être un dossier, une archive `.zip`, `.skill` ou `.plugin`, ou un fichier seul (prompt, gabarit, script). Codes de sortie : 0 = rien relevé, 1 = points à vérifier (dont un outil qui n'a pas tourné), 2 = au moins un point bloquant, 3 = contrôle impossible.
+L'asset peut être un dossier, une archive `.zip`, `.skill` ou `.plugin`, ou, en cas secondaire, un fichier seul (prompt, gabarit, script), contrôlé en partie seulement : sans `SKILL.md`, SkillEvaluator et SkillSpector ne tournent pas. Codes de sortie : 0 = rien relevé, 1 = points à vérifier (dont un outil qui n'a pas tourné), 2 = au moins un point bloquant, 3 = contrôle impossible.
 
 En pratique, il suffit de demander à l'agent « vérifie cette skill » : la skill fait le point sur les outils, propose l'installation et attend votre accord, puis lance le contrôle.
 
