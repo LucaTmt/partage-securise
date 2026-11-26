@@ -10,28 +10,41 @@ permissions:
 
 jobs:
   tests:
-    name: Tests (Python ${{ matrix.python }})
-    runs-on: ubuntu-latest
+    name: ${{ matrix.nom }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        python: ["3.9", "3.13"]
+        include:
+          # Le Python livré avec macOS (3.9) : celui de la plupart des postes qui lanceront la skill.
+          - nom: Python de macOS (3.9)
+            os: macos-latest
+            py: /usr/bin/python3
+            installer: ""
+          - nom: Python 3.13 (Linux)
+            os: ubuntu-latest
+            py: python
+            installer: "3.13"
     steps:
       # Actions épinglées sur un commit exact, pas sur une étiquette qui peut être déplacée.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+      - if: matrix.installer != ''
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
-          python-version: ${{ matrix.python }}
+          python-version: ${{ matrix.installer }}
+
+      - name: Version de Python
+        run: ${{ matrix.py }} --version
 
       - name: Tests de controle.py sur des skills piégées
-        run: python -m unittest discover -s tests -v
+        run: ${{ matrix.py }} -m unittest discover -s tests -v
 
       - name: La skill se contrôle elle-même (contrôles internes)
         run: |
           code=0
-          python plugins/partage-securise/skills/verifier-asset/scripts/controle.py \
+          ${{ matrix.py }} plugins/partage-securise/skills/verifier-asset/scripts/controle.py \
             plugins/partage-securise/skills/verifier-asset \
             --mode partager --sans-outils --sortie "$RUNNER_TEMP/controle" || code=$?
           cat "$RUNNER_TEMP/controle/rapport.md"
