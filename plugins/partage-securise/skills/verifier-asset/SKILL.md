@@ -1,13 +1,32 @@
 ---
 name: verifier-asset
-description: "Contrôle une skill, un plugin, un prompt ou un asset avant de le partager, ou avant d'installer une ressource téléchargée : secrets, données client, en-tête YAML, chargement dans les agents, analyse SkillSpector, scripts et instructions cachées, puis rend un verdict. À utiliser quand on veut partager, poster, publier, installer ou vérifier une skill, un plugin ou un asset."
+description: "Contrôle une skill, un plugin, un prompt ou un asset avant de le partager, ou avant d'installer une ressource téléchargée : secrets, données client, en-tête YAML, chargement dans les agents, analyse SkillSpector, scripts et instructions cachées, puis rend un verdict. À utiliser quand on veut partager, poster, publier, installer ou vérifier une skill, un plugin ou un asset. Use it to check a skill, plugin or prompt before sharing or installing it."
+license: MIT
+metadata:
+  author: "Luca Temst"
+  tags: "sécurité, skills, plugins, secrets, partage"
 ---
 
 # Vérifier un asset avant de le partager ou de l'installer
 
 Ce skill applique la checklist « Avant de partager un asset ». Il combine un script de contrôle automatique et une revue que toi seul peux faire, puis rend un verdict.
 
-Ce skill fonctionne dans Claude (claude.ai, Cowork, Claude Code) et dans IBM Bob. On appelle `SK` le chemin absolu de son dossier, celui qui contient ce fichier : dans les commandes, remplacer `$SK` par ce chemin en entier, sans `~` (entre guillemets, `~` n'est pas développé). Dans Claude, ce chemin est indiqué au chargement ; dans Bob, c'est `~/.bob/skills/verifier-asset` (à écrire en chemin absolu) ou `.bob/skills/verifier-asset` dans le projet. Il contient `scripts/installer_outils.py` (installation des outils), `scripts/controle.py` (la commande unique de contrôle) et `references/checklist.md` (la checklist complète). Lancer le script demande un mode qui autorise les commandes (dans Bob, le mode Agent).
+Ce skill fonctionne dans Claude (claude.ai, Cowork, Claude Code) et dans IBM Bob. On appelle `SK` le chemin absolu de son dossier, celui qui contient ce fichier : dans les commandes, remplacer `$SK` par ce chemin en entier, sans `~` (entre guillemets, `~` n'est pas développé). Dans Claude, ce chemin est indiqué au chargement ; dans Bob, c'est `~/.bob/skills/verifier-asset` (à écrire en chemin absolu) ou `.bob/skills/verifier-asset` dans le projet. Lancer les scripts demande un mode qui autorise les commandes.
+
+## Prérequis
+
+- Python 3.9 ou plus récent : les deux scripts n'utilisent que sa bibliothèque standard.
+- Pour les outils d'analyse, facultatifs : uv, qui les installe chacun dans un environnement isolé, et git, dont uv a besoin pour SkillSpector et detect-secrets. Sans eux, le contrôle tourne avec ses seuls contrôles internes.
+- Un agent qui peut lancer des commandes.
+
+## Scripts
+
+| Script | Rôle | Arguments |
+|---|---|---|
+| `scripts/installer_outils.py` | compare les outils installés à leur dernière version publiée ; avec `--installer`, les installe ou les met à jour | `--installer` (sinon : état seul, ne change rien) |
+| `scripts/controle.py` | la commande unique de contrôle : contrôles internes, outils d'analyse, rapport | `<chemin>` `--mode partager\|installer` `--sortie <dossier>` `--sans-outils` |
+
+La checklist complète est dans `references/checklist.md`.
 
 ## Règles de sécurité de la vérification elle-même
 
@@ -50,7 +69,7 @@ Cette commande lance tout : ses propres contrôles, puis detect-secrets, `harnes
 
 Les contrôles internes ne dépendent que de Python 3 : en-tête YAML, description, taille de SKILL.md, secrets courants (y compris dans une URL), fichiers d'environnement, de clés et de configuration d'accès, caractères Unicode invisibles, commentaires HTML, formules d'injection, commandes risquées (script téléchargé puis exécuté, paquet lancé à la volée, `sudo`, `eval`…), chemins propres à un poste, adresses e-mail (affichées masquées), polices sans licence, liens symboliques, contenu non analysable (binaires, archives imbriquées, dossiers `.git` ou `node_modules`), domaines cités. Pour un plugin, ils listent aussi ce qu'il exécute de lui-même : hooks, serveurs MCP, commandes slash qui lancent du shell, exécutables de `bin/` ; SkillSpector analyse alors le plugin entier.
 
-Code de sortie : 0 = rien relevé et les outils ont tous tourné, 1 = points à vérifier (un outil absent ou en erreur en fait partie), 2 = au moins un point bloquant, 3 = contrôle impossible (chemin introuvable, archive illisible, chiffrée ou autre que zip, option invalide, dossier de sortie dans l'asset) : rien n'a été contrôlé, corriger la commande et relancer. Le rapport est dans `rapport.md` et `rapport.json`, les sorties brutes des outils à côté. Le rapport n'affiche jamais la valeur d'un secret, mais les sorties brutes et la copie de l'asset peuvent en contenir : ne jamais partager le dossier de sortie. Une archive qui tente d'écrire hors de son dossier (chemin en `../`) n'est pas extraite et sort en bloquant.
+Code de sortie : 0 = rien relevé et les outils ont tous tourné, 1 = points à vérifier (un outil absent ou en erreur en fait partie), 2 = au moins un point bloquant, 3 = contrôle impossible : rien n'a été contrôlé, voir « En cas d'erreur ». Le rapport est dans `rapport.md` et `rapport.json`, les sorties brutes des outils à côté. Le rapport n'affiche jamais la valeur d'un secret, mais les sorties brutes et la copie de l'asset peuvent en contenir : ne jamais partager le dossier de sortie. Une archive qui tente d'écrire hors de son dossier (chemin en `../`) n'est pas extraite et sort en bloquant.
 
 ## Étape 4 : interpréter le rapport
 
@@ -88,3 +107,26 @@ Réponse courte, dans cet ordre :
 Proposer ensuite, sans les faire d'office, les corrections sur une copie de l'asset, puis un nouveau passage du contrôle sur cette copie.
 
 Si l'asset a été téléchargé à l'étape 1, proposer de supprimer le dossier temporaire créé pour l'occasion, et lui seul, par le chemin exact noté à l'étape 1, ainsi que le dossier de sortie du contrôle, qui contient une copie de l'asset. Annoncer les chemins et attendre l'accord. Ne jamais supprimer un fichier ou un dossier fourni par l'utilisateur (Téléchargements, projet, archive d'origine). Pour installer ensuite, garder plutôt la copie contrôlée : un nouveau téléchargement pourrait être différent.
+
+## En cas d'erreur
+
+| Symptôme | Cause | Que faire |
+|---|---|---|
+| Code 3, chemin introuvable | chemin mal recopié, `~` entre guillemets | écrire le chemin absolu en entier et relancer |
+| Code 3, archive illisible | archive chiffrée, corrompue ou autre que zip (`.rar`, `.7z`) | demander une archive zip non chiffrée, ou le dossier lui-même |
+| Code 3, dossier de sortie refusé | `--sortie` pointe à l'intérieur de l'asset | choisir un dossier temporaire hors de l'asset |
+| Un outil « en erreur » dans le rapport | outil cassé ou incompatible, version trop ancienne | lire sa sortie brute dans le dossier de sortie, relancer `installer_outils.py`, et le dire dans le verdict |
+| `installer_outils.py` sort en code 2 | uv absent, ou installation ratée | suivre les indications du script ; continuer sans l'outil si l'utilisateur le souhaite |
+| `installer_outils.py` sort en code 3 | pas de réseau, PyPI ou GitHub injoignable, limite de l'API GitHub | continuer avec les versions installées et le signaler |
+| Un agent en `not_loaded` | emplacement ou en-tête | lire le motif entre parenthèses (voir l'étape 4) |
+
+## Limites
+
+Le contrôle aide à décider ; un verdict « prêt » n'est pas une garantie.
+
+- Les contrôles internes reposent sur des motifs : un secret d'un format qu'ils ne connaissent pas peut passer, d'où detect-secrets à côté.
+- Le contenu des PDF, des fichiers Office et des images n'est pas lu : ni texte, ni métadonnées (auteur, propriétés, EXIF). Ces fichiers sont signalés comme non analysés et relèvent de la revue manuelle.
+- Les archives imbriquées ne sont pas ouvertes.
+- SkillSpector tourne en analyse statique (`--no-llm`) : il repère des formes, pas des intentions. La lecture des scripts reste à faire.
+- `harness-check` ne teste pas IBM Bob.
+- Le contrôle porte sur la copie examinée : une ressource téléchargée de nouveau peut avoir changé.

@@ -56,7 +56,7 @@ Ouvrir ensuite une nouvelle session : la skill se déclenche seule (« vérifie 
 
 ### claude.ai et Cowork
 
-Zipper le dossier `skills/verifier-asset` (le zip doit contenir le dossier `verifier-asset/` lui-même), puis l'importer dans Paramètres, Capacités.
+Télécharger [`verifier-asset.zip`](https://github.com/LucaTmt/partage-securise/releases/latest/download/verifier-asset.zip) depuis la dernière release, puis l'importer dans Paramètres, Capacités. Pour une version modifiée, zipper soi-même le dossier `skills/verifier-asset` : le zip doit contenir le dossier `verifier-asset/` lui-même.
 
 ### IBM Bob
 
@@ -158,6 +158,12 @@ En pratique, il suffit de demander à l'agent « vérifie cette skill » : la sk
 Le rapport indique la version de chaque outil, car une nouvelle version peut changer les résultats sur un même asset.
 
 Sur un poste professionnel, vérifier d'abord les règles de votre organisation sur l'installation de logiciels open source. SkillEvaluator ne teste pas le chargement dans IBM Bob : la skill rappelle les règles de Bob à vérifier à la main.
+
+## Choix de sécurité
+
+- **Pas de champ `allowed-tools`.** Dans Claude Code, ce champ ne restreint pas les outils : il autorise ceux qu'il liste sans demander, le temps du tour. Une instruction cachée dans l'asset contrôlé pourrait alors faire lire ou lancer quelque chose sans que l'utilisateur soit sollicité. La skill laisse donc chaque action soumise aux permissions habituelles. SkillSpector le signale (règle LP3, « no tool scope ») : c'est un choix, pas un oubli.
+- **Rien n'est envoyé en ligne pendant le contrôle** : detect-secrets tourne avec `--no-verify`, SkillSpector avec `--no-llm`, et les outils sans les clés d'API des fournisseurs de modèles.
+- **Aucun script de l'asset n'est exécuté**, et l'original n'est jamais modifié.
 
 ## Sources
 
